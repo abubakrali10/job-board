@@ -7,6 +7,8 @@ import helmet from "helmet";
 import rateLimit, { type RateLimitRequestHandler } from "express-rate-limit";
 import connectDB from "./DB/connection";
 config({ path: path.resolve("./config/.env.dev") });
+import authRouter from "./Modules/Auth/auth.controller";
+
 
 const limitter: RateLimitRequestHandler = rateLimit({
 	windowMs: 15 * 60 * 1000,
@@ -30,6 +32,8 @@ export const bootstrap = async () :Promise<void> => {
 	app.get("/users", (req: Request, res: Response) => {
 		return res.status(200).json({message: "Hello from express using TS"});
 	});
+
+	app.use("/api/auth", authRouter);
 
 	app.listen(port, () => {
 		console.log(`Server is running on port: ${port}`);
