@@ -5,6 +5,7 @@ import { config } from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit, { type RateLimitRequestHandler } from "express-rate-limit";
+import connectDB from "./DB/connection";
 config({ path: path.resolve("./config/.env.dev") });
 
 const limitter: RateLimitRequestHandler = rateLimit({
@@ -17,12 +18,14 @@ const limitter: RateLimitRequestHandler = rateLimit({
 })
 
 
-export const bootstrap = () :void => {
+export const bootstrap = async () :Promise<void> => {
 	const app: Express = express();
 	const port: number = Number(process.env.PORT) || 5000; 
 
 	app.use(cors(), express.json(), helmet());
 	app.use(limitter);
+	await connectDB();
+
 
 	app.get("/users", (req: Request, res: Response) => {
 		return res.status(200).json({message: "Hello from express using TS"});
