@@ -1,7 +1,12 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import { isSignUpDTO } from "./auth.dto";
 
 class AuthenticationService {
-	signup = (req: Request, res: Response): Response => {
+	constructor() {}
+
+	signup = (req: Request, res: Response, next: NextFunction): Response => {
+		const { firstName, lastName, email, password }: isSignUpDTO = req.body;
+		console.log({ firstName, lastName, email, password });
 		return res.status(201).json({ message: "User Registed Successfully!" });
 	};
 

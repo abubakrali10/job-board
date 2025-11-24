@@ -1,6 +1,6 @@
 import express from "express";
 import path from "node:path";
-import type { Express, Request, Response } from "express";
+import type { Express, NextFunction, Request, Response } from "express";
 import { config } from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
@@ -8,7 +8,7 @@ import rateLimit, { type RateLimitRequestHandler } from "express-rate-limit";
 import connectDB from "./DB/connection";
 config({ path: path.resolve("./config/.env.dev") });
 import authRouter from "./Modules/Auth/auth.controller";
-
+import { errorHandler } from "./utils/response/error.response";
 
 const limitter: RateLimitRequestHandler = rateLimit({
 	windowMs: 15 * 60 * 1000,
@@ -34,6 +34,8 @@ export const bootstrap = async () :Promise<void> => {
 	});
 
 	app.use("/api/auth", authRouter);
+
+	app.use(errorHandler);
 
 	app.listen(port, () => {
 		console.log(`Server is running on port: ${port}`);
